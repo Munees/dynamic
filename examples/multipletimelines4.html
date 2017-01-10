@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js"></script>
+
+    <script src="../dist/leaflet.timeline.min.js"></script>
+    <link rel="stylesheet" href="../dist/leaflet.timeline.min.css"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+   
+
+    <style>
+/*
+ * Everything fullscreen.
+ */
+html, body, #map {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+    /*
+     * You could style the timeline however you like, but we just make it wider here.
+     */
+    .leaflet-left {
+      width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+	
+    <div id="map"></div>
+	<div id="info">
+      <h1>ATREE</h1>
+      <h2>Over the Last 20 Years</h2>
+      <h3>Currently displayed:</h3>
+      <ul id="displayed-list"></ul>
+    </div>
+	
+	 <script>
+var map;
+
+var polygons = {
+  "type": "FeatureCollection",
+  "features": [
+  {
+    "type": "Feature",
+    "properties": {
+      "Title_of_t": "test poly1",
+	  "start": "1970-01-05",
+      "end": "1979-12-31"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            52.3828125,
+            58.90464570302001
+          ],
+          [
+            52.3828125,
+            70.25945200030641
+          ],
+          [
+            97.03125,
+            70.25945200030641
+          ],
+          [
+            97.03125,
+            58.90464570302001
+          ],
+          [
+            52.3828125,
+            58.90464570302001
+          ]
+          ]
+          ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Title_of_t": "test poly2",
+	  "start": "1980-01-01",
+      "end": "1989-12-31"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            111.09374999999999,
+            57.32652122521709
+          ],
+          [
+            111.09374999999999,
+            71.24435551310671
+          ],
+          [
+            149.765625,
+            71.24435551310671
+          ],
+          [
+            149.765625,
+            57.32652122521709
+          ],
+          [
+            111.09374999999999,
+            57.32652122521709
+          ]
+          ]
+          ]
+    }
+  },
+  
+  {
+    "type": "Feature",
+    "properties": {
+      "Title_of_t": "test poly 3",
+	  "start": "1990-01-01",
+      "end": "1999-12-31"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            42.5390625,
+            37.996162679728116
+          ],
+          [
+            42.5390625,
+            51.944264879028765
+          ],
+          [
+            94.74609375,
+            51.944264879028765
+          ],
+          [
+            94.74609375,
+            37.996162679728116
+          ],
+          [
+            42.5390625,
+            37.996162679728116
+          ]
+          ]
+          ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "Title_of_t": "test poly 4",
+	  "start": "2000-01-01",
+      "end": "2009-12-31"
+    },
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -113.90625,
+            14.604847155053898
+          ],
+          [
+            -113.90625,
+            74.1160468394894
+          ],
+          [
+            10.546875,
+            74.1160468394894
+          ],
+          [
+            10.546875,
+            14.604847155053898
+          ],
+          [
+            -113.90625,
+            14.604847155053898
+          ]
+          ]
+          ]
+    }
+  }
+  ]
+};
+
+var points = {
+  "type": "FeatureCollection",
+  "features": [
+  {
+    "type": "Feature",
+    "properties": {
+	  "Title_of_t": "test title 1",
+      "start": "1981-01-01",
+      "end": "1983-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        122.34374999999999,
+        68.13885164925573
+      ]
+    }
+  },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "BANNI", "ID_1": "12", "ID_12": "12", "PI_NAME": "Ankila Hiremath", "Title_of_t": "The Banni Grasslands in a time of Change: Ecological and Socioeconomic resilience in a coupled human-natural system", "Study_area": "Banni grasslands, Kutch\n", "start": "2015", "end": "2018" }, "geometry": { "type": "Point", "coordinates": [ 69.411956273117681, 23.667822535109519 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "BANNI", "ID_1": "13", "ID_12": "13", "PI_NAME": "Ankila Hiremath", "Title_of_t": "To develop a long-term interdisciplinary research program on the impact of changing ecological patterns and social processes on the Banni grassland and the implications for its pastoralist communities", "Study_area": "Banni grasslands, Kutch\n", "start": 2012, "end": 2016 }, "geometry": { "type": "Point", "coordinates": [ 69.691542941302743, 23.626181967507492 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "DAL LAKE", "ID_1": "28", "ID_12": "28", "PI_NAME": "Aravind", "Title_of_t": "Developing strategy and an action plan for strengthening the ecological integrity of the Dal Lake, Srinagar", "Study_area": "Dal Lake, Srinagar", "start": "2013", "end": "2015" }, "geometry": { "type": "Point", "coordinates": [ 74.821320253836291, 34.243891209411728 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "DAL LAKE", "ID_1": "184", "ID_12": "184", "PI_NAME": "Siddappa Setty", "Title_of_t": "Strategy and Action Plan for Strengthening the Ecological Integrity of the Dal Lake", "Study_area": "Dal Lake, Srinagar", "start": "2014", "end": "2015" }, "geometry": { "type": "Point", "coordinates": [ 75.140849157837295, 34.16181039003532 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "KARNATAKA", "ID_1": "79", "ID_12": "79", "PI_NAME": "Institutional", "Title_of_t": "Developing of a Web-Based Atlas depicting the spatial patterns of biodiversity of Karnataka", "Study_area": "KARNATAKA", "start": "2011", "end": "2015" }, "geometry": { "type": "Point", "coordinates": [ 75.239481903740199, 13.968646622925529 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "KARNATAKA", "ID_1": "100", "ID_12": "100", "PI_NAME": "K.N. Ganeshaiah", "Title_of_t": "WGEEP's site visits\/ consultation\/ brainstorming sessions in the Karnataka region of Western Ghatss", "Study_area": "KARNATAKA", "start": "2010", "end": "2012" }, "geometry": { "type": "Point", "coordinates": [ 75.881936375314766, 14.277976553683654 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "KARNATAKA", "ID_1": "144", "ID_12": "144", "PI_NAME": "Ramesh Kannan", "Title_of_t": "Lantana craft for livelihood improvement of the forest dependent communities in Karnataka", "Study_area": "KARNATAKA", "start": "2010", "end": "2012" }, "geometry": { "type": "Point", "coordinates": [ 74.942049278011226, 13.266705626205168 ] } },
+  { "type": "Feature", 
+	"properties": { 
+		"Id": 0, "location": "TAMIL NADU", "ID_1": "8", "ID_12": "8", "PI_NAME": "Allwin Jesudasan", "Title_of_t": "Perspectives and attitudes of forest fringe villagers towards livelihood based conservation projects forest protection and forests around a Tiger Reserve in Tamil Nadu", "Study_area": "TAMIL NADU", "start": "2008", "end": "2010" }, "geometry": { "type": "Point", "coordinates": [ 78.523138091787985, 11.041909585752499 ] } },
+  { "type": "Feature", "properties": { 
+		"Id": 0, "location": "TAMIL NADU", "ID_1": "140", "ID_12": "140", "PI_NAME": "Rahul Muralidharan", "Title_of_t": "Conservation on a contested coast:Indo-Pacific humpback dolphins and fisheries interactions in Tamil Nadu, India", "Study_area": "TAMIL NADU", "start": "2016", "end": "2017" }, "geometry": { "type": "Point", "coordinates": [ 78.047245890621639, 11.351239516510624 ] } },
+  {
+    "type": "Feature",
+    "properties": {
+	  "Title_of_t": "test title 2",
+      "start": "1981-01-01",
+      "end": "1984-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        132.1875,
+        49.15296965617039
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+	  "Title_of_t": "test title 3",
+      "start": "1988-01-01",
+      "end": "1989-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        90,
+        65.5129625532949
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1990-01-01",
+      "end": "1991-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        79.98046875,
+        53.4357192066942
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1991-01-01",
+      "end": "1992-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -24.609375,
+        49.61070993807422
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1993-01-01",
+      "end": "1993-07-01"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.21875,
+        24.5271348225978
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1994-01-01",
+      "end": "1994-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        35.15625,
+        43.58039085560786
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1996-01-01",
+      "end": "1997-01-01"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        39.375,
+        -33.7243396617476
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1997-01-01",
+      "end": "1997-12-31"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -31.640625,
+        -13.2399454992863
+      ]
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "start": "1999-01-01",
+      "end": "2000-01-01"
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        122.34374999999999,
+        -34.88593094075315
+      ]
+    }
+  }
+  ]
+};
+
+$(document).ready(function () {
+  /*
+   * Create the map
+   */
+  map = L.map('map').setView([0, 0], 2);
+
+  L.tileLayer('https://{s}.tiles.mapbox.com/v3/ebrelsford.ho06j5h0/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>'
+      }).addTo(map);
+
+  var slider = L.timelineSliderControl({
+    formatOutput: function(date){
+      return moment(date).format("YYYY-MM-DD");
+    }
+  });
+  map.addControl(slider);
+
+  var polygonTimeline = L.timeline(polygons);
+  polygonTimeline.addTo(map);
+
+  var pointTimeline = L.timeline(points);
+  pointTimeline.addTo(map);
+  slider.addTimelines(polygonTimeline, pointTimeline);
+});
+    </script>
+  </body>
+</html>
